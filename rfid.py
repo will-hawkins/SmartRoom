@@ -7,11 +7,16 @@ import threading
 import json
 import argparse
 
+import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
+
 from security import RSA, DES, tripleDES
 from security.Handshake import sensorHandshake
 
+reader = SimpleMFRC522()
+
 def scanRFID():
-	rin = input(">>> ") #stand in
+	id, rin = reader.read()
 	return rin
 
 def reject():
@@ -39,3 +44,4 @@ if __name__ == "__main__":
 		payload = tripleDES.tripleDESCBCEncryptAny(rin, key)
 
 		server.sendall(str.encode(payload))
+	GPIO.cleanup()

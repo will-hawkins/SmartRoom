@@ -14,9 +14,9 @@ from security.Handshake import sensorHandshake
 
 from src.HCSR04_lib import HCSR04
 import RPi.GPIO as GPIO
-
+import serial
 TOKEN = 'Sensor2Password'
-sensor_data = {'temp' : 10, 'range': 100}
+sensor_data = {'light' : 10, 'range': 100, 'IR': 0}
 
 
 def rangeThread():
@@ -35,10 +35,13 @@ def rangeThread():
 		time.sleep(.03)
 
 def infraredThread():
-	#TODO
+	ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+	ser.reset_input_buffer()
 	while True:
-		for i in range(360):
-			sensor_data['temp'] = i
+		if ser.in_waiting > 0:
+			arduino = ser.readline().decode('utf-8').rstrip().split(',')
+			sensor_data['light'] = arduino[0]
+			sensor_data['IR'] = arduino[1]
 			time.sleep(.05)
 def sendData(conn, n, key, data):
 	payload = tripleDES.tripleDESCBCEncryptAny(str.encode(json.dumps(data)), key)
