@@ -16,8 +16,8 @@ from security.Handshake import sensorHandshake
 reader = SimpleMFRC522()
 
 def scanRFID():
-	id, rin = reader.read()
-	return (id, rin)
+	id_, rin = reader.read()
+	return id_, rin
 
 def reject():
 	#do stuff with LCD
@@ -39,9 +39,12 @@ if __name__ == "__main__":
 	server, key = sensorHandshake(IP, PORT, TOKEN,1)
 
 	while True:
-		rin = scanRFID()
+		id_, rin = scanRFID()
 
-		payload = tripleDES.tripleDESCBCEncryptAny(rin, key)
+		data = {'id': id_, 'rin': rin}
+		print(data)
+
+		payload = tripleDES.tripleDESCBCEncryptAny(data, key)
 
 		server.sendall(str.encode(payload))
 	GPIO.cleanup()
