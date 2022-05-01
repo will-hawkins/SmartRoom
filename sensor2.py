@@ -16,7 +16,7 @@ from src.HCSR04_lib import HCSR04
 import RPi.GPIO as GPIO
 import serial
 TOKEN = 'Sensor2Password'
-sensor_data = {'light' : 10, 'range': 100, 'IR': 0}
+sensor_data = {}
 
 
 def rangeThread():
@@ -31,7 +31,7 @@ def rangeThread():
 	instance = HCSR04(TRIG_pin=TRIG, ECHO_pin=ECHO)  # BCM17
 	instance.init_HCSR04()
 	while True:
-		sensor_data['range'] = instance.measure_distance()
+		sensor_data['range2'] = instance.measure_distance()
 		time.sleep(.03)
 
 def infraredThread():
