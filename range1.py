@@ -34,15 +34,7 @@ def rangeThread():
 		sensor_data['range1'] = instance.measure_distance()
 		time.sleep(.03)
 
-def infraredThread():
-	ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-	ser.reset_input_buffer()
-	while True:
-		if ser.in_waiting > 0:
-			arduino = ser.readline().decode('utf-8').rstrip().split(',')
-			sensor_data['light'] = arduino[0]
-			sensor_data['IR'] = arduino[1]
-			time.sleep(.05)
+
 def sendData(conn, n, key, data):
 	payload = tripleDES.tripleDESCBCEncryptAny(str.encode(json.dumps(data)), key)
 	conn.sendall(str.encode(payload))
@@ -63,10 +55,7 @@ if __name__ == "__main__":
 	#Start Sensor Threads
 
 	range_sensor_thread = threading.Thread(target=rangeThread)
-	temp_sensor_thread = threading.Thread(target=infraredThread)
-
 	range_sensor_thread.start()
-	temp_sensor_thread.start()
 
 	while True:
 		sendData(server, 1024, key, sensor_data)

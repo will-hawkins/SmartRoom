@@ -1,5 +1,5 @@
 """
-This runs on the RPi with Range sensor 1, The infrared sensor, and the light sensor
+This runs on the RPi with Range sensor 2, The infrared sensor, and the light sensor
 Data is collected from the sensors and sent to the control panel over TCP.
 """
 
@@ -43,6 +43,8 @@ def infraredThread():
 			sensor_data['light'] = arduino[0]
 			sensor_data['IR'] = arduino[1]
 			time.sleep(.05)
+
+
 def sendData(conn, n, key, data):
 	payload = tripleDES.tripleDESCBCEncryptAny(str.encode(json.dumps(data)), key)
 	conn.sendall(str.encode(payload))
@@ -63,10 +65,10 @@ if __name__ == "__main__":
 	#Start Sensor Threads
 
 	range_sensor_thread = threading.Thread(target=rangeThread)
-	temp_sensor_thread = threading.Thread(target=infraredThread)
+	ir_sensor_thread = threading.Thread(target=infraredThread)
 
 	range_sensor_thread.start()
-	temp_sensor_thread.start()
+	ir_sensor_thread.start()
 
 	while True:
 		sendData(server, 1024, key, sensor_data)
