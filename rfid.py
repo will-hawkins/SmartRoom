@@ -17,7 +17,7 @@ reader = SimpleMFRC522()
 
 def scanRFID():
 	id, rin = reader.read()
-	return rin
+	return (id, rin)
 
 def reject():
 	#do stuff with LCD
