@@ -6,6 +6,7 @@ import time
 import threading
 import json
 import argparse
+import serial
 
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
@@ -37,14 +38,18 @@ if __name__ == "__main__":
 	PORT = args.port
 
 	server, key = sensorHandshake(IP, PORT, TOKEN,1)
+	ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+	ser.reset_input_buffer()
 
 	while True:
 		id_, rin = scanRFID()
 
 		data = {'id': id_, 'rin': rin}
 		print(data)
-
+		rin = rin + "\n"
+		ser.write(rin.encode('utf-8'))
+		line = ser.readline().decode('utf-8').rstrip()
 		payload = tripleDES.tripleDESCBCEncryptAny(data, key)
 
 		server.sendall(str.encode(payload))
-	GPIO.cleanup()
+		GPIO.cleanup()
