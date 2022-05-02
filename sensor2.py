@@ -40,8 +40,8 @@ def infraredThread():
 	while True:
 		if ser.in_waiting > 0:
 			arduino = ser.readline().decode('utf-8').rstrip().split(',')
-			sensor_data['light'] = arduino[0]
-			sensor_data['IR'] = arduino[1]
+			sensor_data['light'] = int(arduino[0])
+			sensor_data['infrared'] = int(arduino[1])
 			time.sleep(.05)
 
 
