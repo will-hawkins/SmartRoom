@@ -3,7 +3,7 @@ This runs on RPi 1 which houses the RFID scanner
 """
 import socket
 import time
-import threading
+
 import json
 import argparse
 import serial
@@ -52,4 +52,9 @@ if __name__ == "__main__":
 		payload = tripleDES.tripleDESCBCEncryptAny(data, key)
 
 		server.sendall(str.encode(payload))
+
+		data = server.recv(1024)
+		response = tripleDES.tripleDESCBCDecryptAny(data.decode('utf-8'),key)
+		print(response)
+
 		GPIO.cleanup()
