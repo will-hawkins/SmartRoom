@@ -46,9 +46,7 @@ if __name__ == "__main__":
 
 		data = {'id': id_, 'rin': rin}
 		print(data)
-		rin = rin + "\n"
-		ser.write(rin.encode('utf-8'))
-		line = ser.readline().decode('utf-8').rstrip()
+		r = rin + "\n"
 		payload = tripleDES.tripleDESCBCEncryptAny(data, key)
 
 		server.sendall(str.encode(payload))
@@ -56,5 +54,7 @@ if __name__ == "__main__":
 		data = server.recv(1024)
 		response = tripleDES.tripleDESCBCDecryptAny(data.decode('utf-8'),key)
 		print(response)
-
+		result = response + "\n" + rin + "\t"
+		ser.write(result.encode('utf-8'))
+		line = ser.readline().decode('utf-8').rstrip()
 		GPIO.cleanup()
